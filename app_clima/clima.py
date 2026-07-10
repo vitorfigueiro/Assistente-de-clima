@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 def get_weather(city_name):
     """
@@ -16,11 +17,24 @@ def get_weather(city_name):
         if 'results' in data:
             details = data['results']
 
+            # ----CORREÇÃO DO PERÍODO----
+            # vamos olhar a hora atual do computador para definir se é Matutino ou Vespertino
+            current_time = datetime.now().hour
+            original_period = details.get('currently') # "dia" ou "noite"
+
+            if original_period == "noite":
+                formatted_period = 'Noturno'
+            else:
+                if current_time < 12:
+                    formatted_period = 'Matutino'
+                else:
+                    formatted_period = 'Verpertino'
+
             # Vamos extrair apenas as 3 informações que nos interessam:
             info_weather = {
                 'temperatura': details.get('temp'),
                 'condicao': details.get('description'),
-                'periodo': details.get('currently')
+                'periodo': formatted_period #Agora vai o texto bonito e correto!
             }
             return info_weather
         return None
