@@ -7,7 +7,7 @@ def get_weather(city_name):
     Retorna um dicionário com os dados ou None se houver falha.
     """
     # Criamos o link da API passando o nome da cidade como parâmetro de busca
-    url = f"https://api.hgbrasil.com/weather?key=development&city_name={city_name}"
+    url = f"https://api.hgbrasil.com/weather?city_name={city_name}%2CSP&key=suachave"
 
     try:
         response = requests.get(url)
