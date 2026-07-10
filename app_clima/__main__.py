@@ -1,5 +1,6 @@
 from .localizador import localization_ip
 from .clima import get_weather
+from .sugestoes import generate_suggestions
 
 def main():
     print('============================================')
@@ -20,9 +21,18 @@ def main():
 
         if data_weather:
             print("\n--- Condições Atuais ---")
-            print(f"Temperatura: {data_weather['temperatura']}°C")
-            print(f"Condição: {data_weather['condicao']}")
-            print(f"Período: Matutino/Vespertino ({data_weather['periodo']})")
+            print(f"Temperatura: {data_weather['temperature']}°C")
+            print(f"Condição: {data_weather['condition']}")
+            print(f"Período: Matutino/Vespertino ({data_weather['period']})")
+
+            # -----------------------------
+            #         ATUALIZAÇÃO
+            #------------------------------
+            ideas = generate_suggestions(data_weather)
+            print("\n----Sugestôes para o seu Dia----")
+            print(f"🎵 Playlist Recomendada: {ideas['playlist']}")
+            print(f"💻 Comando de Produtividade: {ideas['command']}")
+            print(f"🎨 Estilo de Ambiente: {ideas['environment']}")
         else:
             print("Não consegui buscar os dados de clima. ❌")
     else:
