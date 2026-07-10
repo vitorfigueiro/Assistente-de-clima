@@ -32,9 +32,9 @@ def get_weather(city_name):
 
             # Vamos extrair apenas as 3 informações que nos interessam:
             info_weather = {
-                'temperatura': details.get('temp'),
-                'condicao': details.get('description'),
-                'periodo': formatted_period #Agora vai o texto bonito e correto!
+                'temperature': details.get('temp'),
+                'condition': details.get('description'),
+                'period': formatted_period #Agora vai o texto bonito e correto!
             }
             return info_weather
         return None
