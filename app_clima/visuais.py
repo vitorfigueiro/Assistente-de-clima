@@ -52,3 +52,7 @@ def Show_Assistant_screen(city, climate_date, ideas):
         f"💻 [bold]Comando Sugerido:[/bold]  `{ideas['command']}`"
     )
     console.print(Panel(text_suggestions, title = "🚀 Sugestões para o seu Momento", border_style = style_edge))
+
+    #PAINEL DE ALERTAS
+    text_alert = "\n".join(ideas["alert"])
+    console.print(Panel(text_alert, title = "⚠️ Notificações Importantes", border_style = "red" if len(ideas['alert']) > 1 else style_edge))
