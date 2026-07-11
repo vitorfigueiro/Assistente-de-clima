@@ -1,44 +1,57 @@
+import os
 import requests
 from datetime import datetime
+from dotenv import load_dotenv
 
-def get_weather(city_name):
+# Carrega as variáveis salvas no arquivo .env
+load_dotenv()
+
+# Busca a chave secreta que você salvou
+API_KEY = os.getenv("WEATHER_API_KEY")
+
+def get_weather(lat, lon):
     """
-    Conecta à API HG Weather para buscar as condições climáticas da cidade.
-    Retorna um dicionário com os dados ou None se houver falha.
+    Conecta à API WeatherAPI oficial usando a chave de API do usuário
     """
-    # Criamos o link da API passando o nome da cidade como parâmetro de busca
-    url = f"https://api.hgbrasil.com/weather?city_name={city_name}%2CSP&key=suachave"
+    # RASTREADOR 1: Verificando se a chave foi lida do arquivo .env
+    if not API_KEY:
+        print("\n[DIAGNÓSTICO] ❌ Erro: A variável WEATHER_API_KEY não foi encontrada no arquivo .env!")
+        return None
+    
+    # A WeatherAPI aceita o nome da cidade direto no parâmetro 'q'
+    url = f"http://api.weatherapi.com/v1/current.json?key={API_KEY}&q={lat},{lon}&aqi=no&lang=pt"
 
     try:
         response = requests.get(url)
-        data = response_json = response.json()
+        data = response.json()
 
-        # A HG Weather retorna os dados principais dentro da chave 'results'
-        if 'results' in data:
-            details = data['results']
+        #[RATREADOR 2]
+        # Se a API retornar algum erro (como chave inválida), tratamos aqui
+        if "error" in data:
+            print(f"\n[DIAGNÓSTICO] ❌ A WeatherAPI recusou a requisição. Resposta do servidor: {data['error']['message']}")
+            return None
+        
+        # Extraindo os dados reais da estrutura da WeatherAPI
+        current = data['current']
 
-            # ----CORREÇÃO DO PERÍODO----
-            # vamos olhar a hora atual do computador para definir se é Matutino ou Vespertino
-            current_time = datetime.now().hour
-            original_period = details.get('currently') # "dia" ou "noite"
+        # Verificação exata do período usando a hora atual
+        current_time = datetime.now().hour
+        is_day = current.get("is_day") # A API retorna 1 para dia e 0 para noite
 
-            if original_period == "noite":
-                formatted_period = 'Noturno'
-            else:
-                if current_time < 12:
-                    formatted_period = 'Matutino'
-                else:
-                    formatted_period = 'Verpertino'
+        if is_day == 0:
+            formatted_period = "Noturno"
+        else:
+            formatted_period = "Matutino" if current_time < 12 else "Vespertino"
 
-            # Vamos extrair apenas as 3 informações que nos interessam:
-            info_weather = {
-                'temperature': details.get('temp'),
-                'condition': details.get('description'),
-                'period': formatted_period #Agora vai o texto bonito e correto!
-            }
-            return info_weather
-        return None
+        # Vamos extrair apenas as 3 informações que nos interessam:
+        info_weather = {
+            'temperature': current.get("temp_c"), # Temperatura em Celsius convertida para inteiro
+            'condition': current.get("condition", {}).get("text"), # Texto em português ex: "Ensolarado"
+            'period': formatted_period #Agora vai o texto bonito e correto!
+        }
+        return info_weather
     
-    except Exception:
+    except Exception as e:
         # Caso ocorra erro de conexão
+        print(f'[DIAGNOSTICO] Erro inesperado no código: {e}')
         return None

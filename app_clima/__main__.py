@@ -1,4 +1,4 @@
-from .localizador import localization_ip
+from .localizador import localization_complete
 from .clima import get_weather
 from .sugestoes import generate_suggestions
 from .visuais import Show_Assistant_screen
@@ -11,14 +11,15 @@ def main():
     print('Buscando sua localização pelo seu IP.\n')
 
     # Chamamos a função
-    city = localization_ip()
+    info_location = localization_complete()
 
-    if city:
-        print(f'Atualmente você está nessa localização {city}📍')
-        print(f'Consultando as condições climaticas da cidade de {city}!')
+    if info_location:
+        city = info_location["city"]
+        lat = info_location["lat"]
+        lon = info_location["lon"]
 
         # Chamamos a nova engrenagem passando a cidade detectada
-        climate_date = get_weather(city)
+        climate_date = get_weather(lat, lon)
 
         if climate_date:
             ideas = generate_suggestions(climate_date)
