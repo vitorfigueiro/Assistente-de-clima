@@ -19,7 +19,7 @@ def get_weather(lat, lon):
         return None
     
     # A WeatherAPI aceita o nome da cidade direto no parâmetro 'q'
-    url = f"http://api.weatherapi.com/v1/current.json?key={API_KEY}&q={lat},{lon}&aqi=no&lang=pt"
+    url = f"http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={lat},{lon}&days=1&aqi=no&lang=pt"
 
     try:
         response = requests.get(url)
@@ -29,11 +29,13 @@ def get_weather(lat, lon):
         # Se a API retornar algum erro (como chave inválida), tratamos aqui
         if "error" in data:
             print(f"\n[DIAGNÓSTICO] ❌ A WeatherAPI recusou a requisição. Resposta do servidor: {data['error']['message']}")
+            print(f'[DIAGNOSTICO DA API] ❌ Código do erro: {data['error'].get('code')}')
             return None
         
         # Extraindo os dados reais da estrutura da WeatherAPI
         current = data['current']
-
+        # Pegamos os dados do dia de hoje dentro da estrutura de previsão
+        forecast_today = data["forecast"]["forecastday"][0]["day"]
         # Verificação exata do período usando a hora atual
         current_time = datetime.now().hour
         is_day = current.get("is_day") # A API retorna 1 para dia e 0 para noite
@@ -47,7 +49,11 @@ def get_weather(lat, lon):
         info_weather = {
             'temperature': current.get("temp_c"), # Temperatura em Celsius convertida para inteiro
             'condition': current.get("condition", {}).get("text"), # Texto em português ex: "Ensolarado"
-            'period': formatted_period #Agora vai o texto bonito e correto!
+            'period': formatted_period, #Agora vai o texto bonito e correto!
+            # Novos dados de previsão
+            'maximum': round(float(forecast_today.get('maxtemp_c',0))),
+            'minimum': round(float(forecast_today.get('mintemp_C',0))),
+            'chance_rain': forecast_today.get('daily_chance_of_rain', 0)
         }
         return info_weather
     
