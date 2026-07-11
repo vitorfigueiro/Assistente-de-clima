@@ -1,6 +1,6 @@
 import requests
 
-def localization_ip():
+def localization_complete():
     try:
         # Fazemos uma requisição GET para a API pública ip-api
         # O parâmetro ?lang=pt-br garante que os nomes venham em português
@@ -11,7 +11,11 @@ def localization_ip():
 
         # A API retorna um campo chamado 'status'. Se for 'success', deu certo!
         if data.get('status') == 'success':
-            return data.get('city')
+            return {
+                "city": data.get('city'),
+                "lat": data.get('lat'),
+                "lon": data.get('lon')
+                }
         else:
             return None
         

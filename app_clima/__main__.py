@@ -1,6 +1,7 @@
-from .localizador import localization_ip
+from .localizador import localization_complete
 from .clima import get_weather
 from .sugestoes import generate_suggestions
+from .visuais import Show_Assistant_screen
 
 def main():
     print('============================================')
@@ -10,29 +11,19 @@ def main():
     print('Buscando sua localização pelo seu IP.\n')
 
     # Chamamos a função
-    city = localization_ip()
+    info_location = localization_complete()
 
-    if city:
-        print(f'Atualmente você está nessa localização {city}📍')
-        print(f'Consultando as condições climaticas da cidade de {city}!')
+    if info_location:
+        city = info_location["city"]
+        lat = info_location["lat"]
+        lon = info_location["lon"]
 
         # Chamamos a nova engrenagem passando a cidade detectada
-        data_weather = get_weather(city)
+        climate_date = get_weather(lat, lon)
 
-        if data_weather:
-            print("\n--- Condições Atuais ---")
-            print(f"Temperatura: {data_weather['temperature']}°C")
-            print(f"Condição: {data_weather['condition']}")
-            print(f"Período: Matutino/Vespertino ({data_weather['period']})")
-
-            # -----------------------------
-            #         ATUALIZAÇÃO
-            #------------------------------
-            ideas = generate_suggestions(data_weather)
-            print("\n----Sugestôes para o seu Dia----")
-            print(f"🎵 Playlist Recomendada: {ideas['playlist']}")
-            print(f"💻 Comando de Produtividade: {ideas['command']}")
-            print(f"🎨 Estilo de Ambiente: {ideas['environment']}")
+        if climate_date:
+            ideas = generate_suggestions(climate_date)
+            Show_Assistant_screen(city, climate_date, ideas)
         else:
             print("Não consegui buscar os dados de clima. ❌")
     else:
