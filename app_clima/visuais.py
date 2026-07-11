@@ -38,6 +38,9 @@ def Show_Assistant_screen(city, climate_date, ideas):
     text_climate = (
         f"📍 [bold]Localização:[/bold] {city}\n"
         f"🌡️ [bold]Temperatura:[/bold] {climate_date['temperature']}°C\n"
+        f"🔺 [bold]Máxima de Hoje:[/bold] [bold red]{climate_date['maximum']}°C[/bold red] |"
+        f"🔻 [bold]Mínima de Hoje:[/bold] [bold blue]{climate_date['minimum']}°C[/bold blue]\n"
+        f"🌧️ [bold]Chance de Chuva:[/bold] {climate_date['chance_rain']}%\n"
         f"☁️ [bold]Condição:[/bold] {climate_date['condition']}\n"
         f"🕒 [bold]Período:[/bold] {climate_date['period']}"
     )
