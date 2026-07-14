@@ -1,8 +1,8 @@
 import sys
-from .localizador import localization_complete
-from .clima import get_weather
-from .sugestoes import generate_suggestions
-from .visuais import Show_Assistant_screen
+from app_clima.localizador import localization_complete
+from app_clima.clima import get_weather
+from app_clima.sugestoes import generate_suggestions
+from app_clima.visuais import Show_Assistant_screen
 
 def automated_assistant():
     print('============================================')
