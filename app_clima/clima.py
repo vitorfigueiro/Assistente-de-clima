@@ -52,7 +52,7 @@ def get_weather(lat, lon):
             'period': formatted_period, #Agora vai o texto bonito e correto!
             # Novos dados de previsão
             'maximum': round(float(forecast_today.get('maxtemp_c',0))),
-            'minimum': round(float(forecast_today.get('mintemp_C',0))),
+            'minimum': round(float(forecast_today.get('mintemp_c',0))),
             'chance_rain': forecast_today.get('daily_chance_of_rain', 0)
         }
         return info_weather
